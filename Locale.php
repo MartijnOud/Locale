@@ -29,7 +29,7 @@ class Locale
     {
         $this->setLocale($locale);
         $this->setSource($this->locale);
-        $this->setFile($this->source);
+        $this->setFile();
 
         if ($this->log === true) {
             $this->setErrorSource($this->locale);
@@ -45,11 +45,11 @@ class Locale
     public function setSource($locale)
     {
         $this->source = __DIR__.'/locale'.'/'.$locale.'/'.$locale.'.csv';
-        $this->setFile($this->source);
+        $this->setFile();
     }
 
 
-    public function setFile($source)
+    public function setFile()
     {
 
         try {
@@ -73,7 +73,7 @@ class Locale
     public function setErrorSource($locale)
     {
         $this->errorSource = __DIR__.'/locale'.'/'.$locale.'/errors.log';
-        $this->setErrorFile($this->errorSource);
+        $this->setErrorFile();
     }
 
     public function setErrorFile()
@@ -94,11 +94,14 @@ class Locale
 
     private function logError($input)
     {
+
+        $this->setErrorFile();
+
         // loop through log file
         while (!feof($this->errorFile)) {
 
             // Get every line in file
-            $line = fgets($this->file);
+            $line = fgets($this->errorFile);
             $line = trim($line);
 
             // input with double quotes
@@ -127,6 +130,8 @@ class Locale
     public function __($input, $variables = null)
     {
 
+        $this->setFile();
+
         // Loop through file
         while (!feof($this->file)) {
 
@@ -134,7 +139,7 @@ class Locale
             $line = fgets($this->file);
             $line = trim($line);
 
-            // Skip comments
+            // # Skip comments
             if (substr($line, 0, 1) == "#") {
                 continue;
             }
