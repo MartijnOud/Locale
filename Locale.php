@@ -33,7 +33,7 @@ class Locale
 
         if ($this->log === true) {
             $this->setErrorSource($this->locale);
-            $this->setErrorFile($this->errorSource);
+            $this->setErrorFile();
         }
     }
 
@@ -63,11 +63,18 @@ class Locale
             }
 
             $this->file = $fp;
+            return $this->file;
+
         } catch (\Exception $e) {
             echo 'Caught Exception: ',  $e->getMessage(), "\n";
             exit();
         }
 
+    }
+
+    public function closeFile()
+    {
+        return fclose($this->file);
     }
 
     public function setErrorSource($locale)
@@ -86,10 +93,17 @@ class Locale
             }
 
             $this->errorFile = $fp;
+            return $this->errorFile;
+
         } catch (\Exception $e) {
             echo 'Caught Exception: ',  $e->getMessage(), "\n";
             exit();
         }
+    }
+
+    public function closeErrorFile()
+    {
+        return fclose($this->errorFile);
     }
 
     private function logError($input)
@@ -117,6 +131,8 @@ class Locale
         if ($found != 1) {
             fwrite($this->errorFile, $line_error."\n");
         }
+
+        $this->closeErrorFile();
 
         return true;
     }
@@ -156,6 +172,8 @@ class Locale
                     }
                 }
 
+                $this->closeFile();
+
                 return $translation;
             }
 
@@ -171,6 +189,8 @@ class Locale
         if ($this->debug === true) {
             throw new \Exception('No translation found for '.$input.' with locale '.$this->locale.'');
         }
+
+        $this->closeFile();
 
         return $input;
 
