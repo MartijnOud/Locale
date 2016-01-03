@@ -16,7 +16,7 @@ class Locale
     private $debug = false;
 
     // set to *true* to write non translated inputs to .log file
-    private $log = true;
+    private $log = false;
 
     // Set with functions
     private $locale = null;
@@ -66,7 +66,7 @@ class Locale
             return $this->file;
 
         } catch (\Exception $e) {
-            echo 'Caught Exception: ',  $e->getMessage(), "\n";
+            echo 'Caught Exception: ',  $e->getMessage(), PHP_EOL;
             exit();
         }
 
@@ -86,17 +86,20 @@ class Locale
     public function setErrorFile()
     {
         try {
+
             // Open or create .log file
             $fp = fopen($this->errorSource, 'a');
+
             if (!$fp) {
                 throw new \Exception('Error file failed to create/open for locale '.$this->locale);
             }
 
             $this->errorFile = $fp;
+
             return $this->errorFile;
 
         } catch (\Exception $e) {
-            echo 'Caught Exception: ',  $e->getMessage(), "\n";
+            echo 'Caught Exception: ',  $e->getMessage(), PHP_EOL;
             exit();
         }
     }
@@ -129,7 +132,7 @@ class Locale
 
         // write to .log if not found
         if ($found != 1) {
-            fwrite($this->errorFile, $line_error."\n");
+            fwrite($this->errorFile, $line_error . PHP_EOL);
         }
 
         $this->closeErrorFile();
